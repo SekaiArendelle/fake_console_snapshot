@@ -1,6 +1,9 @@
 venv/
+.vscode/
 __pycache__/
 
 **/*.pyc
+**/*.jpg
+**/*.png
 
 *.ignore*
