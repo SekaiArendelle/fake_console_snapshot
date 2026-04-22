@@ -1,5 +1,9 @@
-from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
+from typing import TypeAlias, Tuple, List
+from PIL import Image, ImageDraw, ImageFont
+
+RGBColor: TypeAlias = Tuple[int, int, int]
+TextBBox: TypeAlias = Tuple[float, float, float, float]
 
 
 def _is_chinese_char(ch: str) -> bool:
@@ -15,11 +19,11 @@ def _is_chinese_char(ch: str) -> bool:
     )
 
 
-def text2fake_console_snapshot(text: str):
-    # Define console-like colors
-    bg_color = (0, 0, 0)  # Black background
-    text_color = (255, 255, 255)  # White text
-
+def text2fake_console_snapshot(
+    text: str,
+    bg_color: RGBColor = (40, 44, 52),
+    text_color: RGBColor = (255, 255, 255),
+) -> Image.Image:
     # Font settings - only load bundled fonts from fcs/fonts
     font_size = 16
     fonts_dir = Path(__file__).resolve().parent / "fonts"
@@ -30,53 +34,53 @@ def text2fake_console_snapshot(text: str):
     zh_font = ImageFont.truetype(str(zh_font_path), font_size)
 
     # Calculate image dimensions based on text
-    lines = text.split("\n")
+    lines: List[str] = text.split("\n")
 
     # Calculate dimensions more accurately
-    max_width = 0
-    max_height = 0
+    max_width: int = 0
+    max_height: int = 0
 
     temp_img = Image.new("RGB", (1, 1))
     temp_draw = ImageDraw.Draw(temp_img)
 
     for line in lines:
-        line_width = 0
-        line_height = 0
+        line_width: int = 0
+        line_height: int = 0
 
         for ch in line:
             current_font = zh_font if _is_chinese_char(ch) else en_font
-            bbox = temp_draw.textbbox((0, 0), ch, font=current_font)
-            char_width = bbox[2] - bbox[0]
-            char_height = bbox[3] - bbox[1]
+            bbox: TextBBox = temp_draw.textbbox((0, 0), ch, font=current_font)
+            char_width = int(bbox[2] - bbox[0])
+            glyph_height = int(bbox[3] - bbox[1])
             line_width += char_width
-            line_height = max(line_height, char_height)
+            line_height = max(line_height, glyph_height)
 
         if line_height == 0:
             bbox = temp_draw.textbbox((0, 0), "A", font=en_font)
-            line_height = bbox[3] - bbox[1]
+            line_height = int(bbox[3] - bbox[1])
 
         max_width = max(max_width, line_width)
         max_height = max(max_height, line_height)
 
     # Add padding
-    padding = 10
-    char_height = max_height if max_height > 0 else 20
-    img_width = max_width + 2 * padding
-    img_height = len(lines) * char_height + 2 * padding
+    padding: int = 10
+    char_height: int = max_height if max_height > 0 else 20
+    img_width: int = max_width + 2 * padding
+    img_height: int = len(lines) * char_height + 2 * padding
 
     # Create image with black background
     img = Image.new("RGB", (img_width, img_height), color=bg_color)
     draw = ImageDraw.Draw(img)
 
     # Draw text line by line
-    y_offset = padding
+    y_offset: int = padding
     for line in lines:
-        x_offset = padding  # Left align
+        x_offset: int = padding  # Left align
         for ch in line:
             current_font = zh_font if _is_chinese_char(ch) else en_font
             draw.text((x_offset, y_offset), ch, fill=text_color, font=current_font)
             bbox = draw.textbbox((0, 0), ch, font=current_font)
-            x_offset += bbox[2] - bbox[0]
+            x_offset += int(bbox[2] - bbox[0])
         y_offset += char_height
 
     return img
