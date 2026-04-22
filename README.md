@@ -16,9 +16,14 @@ pip install pillow
 ## CLI Usage (stdin -> image)
 
 The CLI reads **all text from stdin** and writes an image to the path provided by `-o/--output`.
+It also supports `--bg-color`, `--text-color` (both in `R,G,B`) and `--font-size`.
 
 ```bash
 python -m fcs -o output.png
+```
+
+```bash
+python -m fcs -o output.png --bg-color 40,44,52 --text-color 255,255,255 --font-size 16
 ```
 
 ### Windows examples
@@ -39,6 +44,12 @@ Use UTF-8 output path and auto-create parent folders:
 
 ```powershell
 "line1`nline2" | python -m fcs --output .\artifacts\console\shot.png
+```
+
+Custom colors and font size:
+
+```powershell
+"Hello`n彩色输出" | python -m fcs -o .\snapshot.png --bg-color 25,25,25 --text-color 0,255,180 --font-size 20
 ```
 
 ## Python API
