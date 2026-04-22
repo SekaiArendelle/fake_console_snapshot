@@ -1,0 +1,3 @@
+
+def text2fake_console_snapshot(text: str):
+    ...
