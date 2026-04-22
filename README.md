@@ -7,10 +7,10 @@ Generate a terminal-style image from plain text, with mixed English/Chinese font
 - Python 3.10+
 - Pillow
 
-Install dependency:
+Install dependencies with uv:
 
 ```bash
-pip install pillow
+uv sync
 ```
 
 ## CLI Usage (stdin -> image)
@@ -19,11 +19,11 @@ The CLI reads **all text from stdin** and writes an image to the path provided b
 It also supports `--bg-color`, `--text-color` (both in `R,G,B`) and `--font-size`.
 
 ```bash
-python -m fcs -o output.png
+uv run python -m fcs -o output.png
 ```
 
 ```bash
-python -m fcs -o output.png --bg-color 40,44,52 --text-color 255,255,255 --font-size 16
+uv run python -m fcs -o output.png --bg-color 40,44,52 --text-color 255,255,255 --font-size 16
 ```
 
 ### Windows examples
