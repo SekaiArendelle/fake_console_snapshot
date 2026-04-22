@@ -23,9 +23,32 @@ def text2fake_console_snapshot(
     text: str,
     bg_color: RGBColor = (40, 44, 52),
     text_color: RGBColor = (255, 255, 255),
+    font_size: int = 16,
 ) -> Image.Image:
-    # Font settings - only load bundled fonts from fcs/fonts
-    font_size = 16
+    if not isinstance(text, str):
+        raise TypeError(f"Parameter 'text' must be a string, got {type(text).__name__}")
+
+    if (
+        not isinstance(bg_color, tuple)
+        or len(bg_color) != 3
+        or not all(isinstance(c, int) and 0 <= c <= 255 for c in bg_color)
+    ):
+        raise ValueError(
+            "Parameter 'bg_color' must be a tuple of three integers (R, G, B) each in the range 0-255."
+        )
+
+    if (
+        not isinstance(text_color, tuple)
+        or len(text_color) != 3
+        or not all(isinstance(c, int) and 0 <= c <= 255 for c in text_color)
+    ):
+        raise ValueError(
+            "Parameter 'text_color' must be a tuple of three integers (R, G, B) each in the range 0-255."
+        )
+
+    if not isinstance(font_size, int) or font_size <= 0:
+        raise ValueError("Parameter 'font_size' must be a positive integer.")
+
     fonts_dir = Path(__file__).resolve().parent / "fonts"
     en_font_path = fonts_dir / "UbuntuMonoNerdFontMono-Regular.ttf"
     zh_font_path = fonts_dir / "msyh.ttc"

@@ -43,12 +43,7 @@ Use UTF-8 output path and auto-create parent folders:
 
 ## Python API
 
-```python
-from fcs.to_img import text2fake_console_snapshot
-
-img = text2fake_console_snapshot("Hello\n中文")
-img.save("snapshot.png")
-```
+see [examples](./examples/)
 
 ## Notes
 
